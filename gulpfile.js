@@ -33,6 +33,8 @@ gulp.task('default', ['js', 'scss']);
 
 gulp.task('js', ['js-blockly', 'js-app']);
 
+// These files are very large and already compressed,
+// so they have been seperated from the js-app task.
 gulp.task('js-blockly', function () {
     return gulp.src(PATHS.BLOCKLY_JS)
         .pipe(concat('blockly.js'))
