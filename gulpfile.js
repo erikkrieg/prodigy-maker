@@ -16,7 +16,7 @@ var PATHS = {
     ],
     JS: [
         'node_modules/lodash/lodash.js',
-        'node_modules/phaser/build/phaser.js',
+        'node_modules/phaser/build/phaser.js'
     ],
     SCSS: []
 };
