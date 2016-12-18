@@ -29,9 +29,7 @@ var config = {
     }
 };
 
-gulp.task('default', ['js', 'scss'], function () {
-    console.log(util.env);
-});
+gulp.task('default', ['js', 'scss']);
 
 gulp.task('js', ['js-blockly', 'js-app']);
 
