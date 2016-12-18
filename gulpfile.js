@@ -9,11 +9,13 @@ var util = require('gulp-util');
 var gulpif = require('gulp-if');
 
 var PATHS = {
-    JS: [
-        'node_modules/lodash/lodash.js',
+    BLOCKLY_JS: [
         'src/js/vendor/blockly/blockly_compressed.js',
         'src/js/vendor/blockly/blocks_compressed.js',
         'src/js/vendor/blockly/msg/js/en.js'
+    ],
+    JS: [
+        'node_modules/lodash/lodash.js',
     ],
     SCSS: []
 };
@@ -30,7 +32,15 @@ gulp.task('default', ['js', 'scss'], function () {
     console.log(util.env);
 });
 
-gulp.task('js', function () {
+gulp.task('js', ['js-blockly', 'js-app']);
+
+gulp.task('js-blockly', function () {
+    return gulp.src(PATHS.BLOCKLY_JS)
+        .pipe(concat('blockly.js'))
+        .pipe(gulp.dest('dist'));
+});
+
+gulp.task('js-app', function () {
     return gulp.src(PATHS.JS)
         .pipe(concat('app.js'))
         .pipe(gulpif(config.uglify, uglify()))
