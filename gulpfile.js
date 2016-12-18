@@ -1,11 +1,37 @@
 'use strict';
 
 var gulp = require('gulp');
+var concat = require('gulp-concat');
 var sass = require('gulp-sass');
 var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var util = require('gulp-util');
+var gulpif = require('gulp-if');
 
-gulp.task('default', function () {
-    console.log('hello world', arguments);
+var PATHS = {
+    JS: [
+       'src/js/vendor/blockly/blockly_compressed.js',
+       'src/js/vendor/blockly/blocks_compressed.js',
+       'src/js/vendor/blockly/msg/js/en.js'
+    ],
+    SCSS: []
+};
+
+var config = {
+    sourceMaps: !util.env.production,
+    uglify: util.env.production,
+    sass: {
+        outputStyle: util.env.production ? 'compressed' : 'nested'
+    }
+};
+
+gulp.task('default', ['js', 'scss'], function () {
+    console.log(util.env);
+});
+
+gulp.task('js', function () {
+    return gulp.src(PATHS.JS)
+        .pipe(concat('app.js'))
+        .pipe(gulpif(config.uglify, uglify()))
+        .pipe(gulp.dest('dist'));
 });
