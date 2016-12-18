@@ -10,9 +10,10 @@ var gulpif = require('gulp-if');
 
 var PATHS = {
     JS: [
-       'src/js/vendor/blockly/blockly_compressed.js',
-       'src/js/vendor/blockly/blocks_compressed.js',
-       'src/js/vendor/blockly/msg/js/en.js'
+        'node_modules/lodash/lodash.js',
+        'src/js/vendor/blockly/blockly_compressed.js',
+        'src/js/vendor/blockly/blocks_compressed.js',
+        'src/js/vendor/blockly/msg/js/en.js'
     ],
     SCSS: []
 };
