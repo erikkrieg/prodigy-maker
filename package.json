@@ -19,5 +19,8 @@
   "dependencies": {
     "lodash": "^4.17.2",
     "phaser": "^2.6.2"
+  },
+  "devDependencies": {
+    "gulp-sass": "^3.0.0"
   }
 }
