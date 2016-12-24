@@ -56,4 +56,4 @@ gulp.task('scss', function () {
         .pipe(sass(config.sass))
         .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
         .pipe(gulp.dest('dist'))
-})
+});
