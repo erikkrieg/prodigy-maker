@@ -18,7 +18,8 @@
   "homepage": "https://github.com/erikkrieg/prodigy-maker#readme",
   "dependencies": {
     "lodash": "^4.17.2",
-    "phaser": "^2.6.2"
+    "phaser": "^2.6.2",
+    "reset-css": "^2.2.0"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
