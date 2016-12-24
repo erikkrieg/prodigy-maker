@@ -18,7 +18,9 @@ var PATHS = {
         'node_modules/lodash/lodash.js',
         'node_modules/phaser/build/phaser.js'
     ],
-    SCSS: []
+    SCSS: [
+        'src/scss/**/*.scss'
+    ]
 };
 
 var config = {
@@ -47,3 +49,11 @@ gulp.task('js-app', function () {
         .pipe(gulpif(config.uglify, uglify()))
         .pipe(gulp.dest('dist'));
 });
+
+gulp.task('scss', function () {
+    return gulp.src(PATHS.SCSS)
+        .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
+        .pipe(sass(config.sass))
+        .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
+        .pipe(gulp.dest('dist'))
+})
