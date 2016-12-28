@@ -6,8 +6,12 @@
     });
     workspace.inject(document.getElementById('area-workspace'));
 
+    // TODO: Stop using global variables!!!11!
     workspace.onPlay = function () {
-        console.log('start game', workspace.getActions());
+        window.actions = workspace.getActions().map(function (action) {
+            return window.ACTION[action.toUpperCase()];
+        });
+        console.log('start game', window.actions);
         game.start();
     };
 
