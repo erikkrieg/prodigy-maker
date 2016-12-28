@@ -22,7 +22,7 @@
         };
 
         Blockly.JavaScript[move.type] = function(block) {
-            return 'console.log(\'' + move.label + '\');\n';
+            return 'actions.push("' + move.type + '");\n';
         };
     });
 

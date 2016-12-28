@@ -39,3 +39,16 @@ Workspace.prototype.onResize = function onResize(e) {
     el.style.width = this._parentEl.offsetWidth + 'px';
     el.style.height = this._parentEl.offsetHeight + 'px';
 };
+
+Workspace.prototype.getCode = function getCode() {
+    return Blockly.JavaScript.workspaceToCode(this._workspace); 
+};
+
+Workspace.prototype.getActions = function play() {
+    var code = '(function () {\n';
+    code += 'var actions = []\n';
+    code += this.getCode();
+    code += 'return actions;\n';
+    code += '})();\n';
+    return eval(code);
+};
