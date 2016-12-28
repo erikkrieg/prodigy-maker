@@ -12,6 +12,7 @@ var PATHS = {
     BLOCKLY_JS: [
         'src/js/vendor/blockly/blockly_compressed.js',
         'src/js/vendor/blockly/blocks_compressed.js',
+        'src/js/vendor/blockly/javascript_compressed.js',
         'src/js/vendor/blockly/msg/js/en.js'
     ],
     JS: [
