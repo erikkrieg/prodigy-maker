@@ -1,5 +1,6 @@
 function Game() {
-    var game = new Phaser.Game(800, 600, Phaser.AUTO, 'area-game', { 
+    var parent = document.getElementById("area-game");
+    var game = new Phaser.Game(parent.clientWidth, parent.clientHeight, Phaser.AUTO, 'area-game', { 
         preload: Game.fn, 
         create: Game.fn, 
         update: Game.fn 

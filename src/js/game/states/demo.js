@@ -4,7 +4,7 @@ var ACTION = {
     CLIMB_RIGHT: 3
 };
 
-var actions = [ACTION.MOVE_RIGHT, ACTION.JUMP_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT, ACTION.CLIMB_RIGHT, ACTION.MOVE_RIGHT];
+var actions = [ACTION.MOVE_RIGHT, ACTION.JUMP_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT];
 
 
 var demo = function(game){
@@ -18,35 +18,20 @@ demo.prototype = {
     // position: TILE_SIZE * 1,
 
     preload: function(){
-        this.game.load.spritesheet('player', 'tiles.png', 128, 128);
-        this.game.load.tilemap('tilemap', 'test.json', null, Phaser.Tilemap.TILED_JSON);
-        this.game.load.image('tiles', 'tiles.png');
+        // this.game.load.spritesheet('player', 'tiles.png', 128, 128);
+        this.game.load.tilemap('tilemap', 'level.json', null, Phaser.Tilemap.TILED_JSON);
+        this.game.load.image('tiles', 'assets/sprites/pix.png');
+        this.game.load.spritesheet('player', 'assets/sprites/player.png', 100, 100, 18);
 
-
-        this.isMoving = false;
         this.actionNumber = 0;
+        this.gameOver = false;
+        this.playerTweens = [];
     },
     create: function(){
-        this.game.physics.startSystem(Phaser.Physics.ARCADE);
-     
-        //Change the background colour
-        this.game.stage.backgroundColor = "#a9f0ff";
-     
-        //Add the tilemap and tileset image. The first parameter in addTilesetImage
-        //is the name you gave the tilesheet when importing it into Tiled, the second
-        //is the key to the asset in Phaser
-        this.map = this.game.add.tilemap('tilemap');
-        this.map.addTilesetImage('platform-sample', 'tiles');
-     
-        //Add both the background and ground layers.
-        this.backgroundlayer = this.map.createLayer('BackgroundLayer');
-        this.groundLayer = this.map.createLayer('GroundLayer');
-     
-        //Before you can use the collide function you need to set what tiles can collide
-        this.map.setCollisionBetween(1, 100, true, 'GroundLayer');
+        this.setupStage();
 
-        //Add the sprite to the game and enable arcade physics on it
-        this.sprite = this.game.add.sprite(this.TILE_SIZE, 0, 'player');
+        this.setupPlayer();
+        
         this.game.physics.arcade.enable(this.sprite);
      
         //Change the world size to match the size of this layer
@@ -65,19 +50,81 @@ demo.prototype = {
         _.delay(this.processActions.bind(this), 1000);
     },
 
+    setupStage: function() {
+        this.game.physics.startSystem(Phaser.Physics.ARCADE);
+     
+        //Change the background colour
+        this.game.stage.backgroundColor = "#a9f0ff";
+     
+        //Add the tilemap and tileset image. The first parameter in addTilesetImage
+        //is the name you gave the tilesheet when importing it into Tiled, the second
+        //is the key to the asset in Phaser
+        this.map = this.game.add.tilemap('tilemap');
+        this.map.addTilesetImage('pix', 'tiles');
+     
+        this.groundLayer = this.map.createLayer('GroundLayer');
+     
+        //Before you can use the collide function you need to set what tiles can collide
+        this.map.setCollisionBetween(1, 100, true, 'GroundLayer');
+    },
+
+    setupPlayer: function() {
+        //Add the sprite to the game and enable arcade physics on it
+        this.sprite = this.game.add.sprite(this.TILE_SIZE, 500, 'player');
+        this.sprite.anchor.setTo(0, 1);
+        this.sprite.animations.add('walk', [0,1,2,3,4,5,6,7]);
+        this.sprite.animations.add('stand', [8,9,10,11,12,13,14,15]);
+        this.sprite.animations.add('fall', [16]);
+
+        this.sprite.animations.play('stand', 10, true);
+    },
+
     update: function() {
         //Make the sprite collide with the ground layer
         this.game.physics.arcade.collide(this.sprite, this.groundLayer);
+
+        this.checkFalling();
+        this.checkWall();
+    },
+
+    checkFalling: function() {
+        var tilesBelowPlayer = this.groundLayer.getTiles(this.sprite.position.x, this.sprite.position.y + 50, 50, 300, true);
+
+        if(tilesBelowPlayer.length == 0 && actions[this.actionNumber - 1] !== ACTION.JUMP_RIGHT) {
+            this.sprite.animations.play('fall');
+            this.gameOver = true;
+        }
+    },
+
+    checkWall: function() {
+        var tilesBlockingPlayer = this.groundLayer.getTiles(this.sprite.position.x + this.sprite.width - 15, this.sprite.position.y - this.sprite.height / 2, 10 , 10, true);
+
+        if(tilesBlockingPlayer.length > 0 && actions[this.actionNumber - 1] == ACTION.MOVE_RIGHT && !this.gameOver) {
+            this.stopPlayerTweens();
+            this.gameOver = true;
+            this.processActions();
+        }
+    },
+
+    stopPlayerTweens: function() {
+        this.playerTweens.forEach(function(tween) {
+            tween.stop();
+        })
     },
 
     processActions: function() {
-        if(this.actionNumber < actions.length) {
+        if(this.actionNumber < actions.length && !this.gameOver) {
             this.processAction(actions[this.actionNumber]);
             this.actionNumber++;
         }
         else {
-            _.delay(this.restartGame.bind(this), 1000);
+            this.completeGame();
         }
+    },
+
+    completeGame: function() {
+        _.delay(this.restartGame.bind(this), 1000);
+        this.sprite.animations.play('stand', 10, true);
     },
 
     restartGame: function() {
@@ -85,6 +132,7 @@ demo.prototype = {
     },
 
     processAction: function(action) {
+        this.game.debug.text("action: "+action);
         switch(action) {
             case ACTION.MOVE_RIGHT:
                 this.moveRight(this.processActions.bind(this));
@@ -99,10 +147,14 @@ demo.prototype = {
     },
 
     moveRight: function(callback) {
+        this.sprite.animations.play('walk', 10, true);
+
         var tween = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x + this.TILE_SIZE }, this.TIME_TO_MOVE, Phaser.Easing.Linear.None, true);
         tween.onComplete.add(function() {
             callback();
         }, this);
+
+        this.playerTweens.push(tween);
     },
 
     jumpRight: function(callback) {
@@ -120,7 +172,10 @@ demo.prototype = {
         var tweenY = this.game.add.tween(this.sprite).to( { y: this.sprite.position.y - this.TILE_SIZE}, this.TIME_TO_MOVE, Phaser.Easing.Linear.None)
                         .to( { x: this.sprite.position.x + this.TILE_SIZE }, this.TIME_TO_MOVE, Phaser.Easing.Linear.None);
 
-        tweenY.onComplete.add(this.enableGravity, this);
+        tweenY.onComplete.add(function() {
+            this.enableGravity();
+            callback();
+        }, this);
         tweenY.start();
     },
 
