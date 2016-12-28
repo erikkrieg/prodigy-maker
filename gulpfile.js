@@ -17,6 +17,7 @@ var PATHS = {
     JS: [
         'node_modules/lodash/lodash.js',
         'node_modules/phaser/build/phaser.js',
+        'src/js/workspace/**/*.js',
         'src/js/game/states/*.js',
         'src/js/game/*.js'
     ],
@@ -33,14 +34,7 @@ var config = {
     }
 };
 
-
-gulp.task('watch', ['default', 'watch-files']);
-
-gulp.task('watch-files', function () {
-    gulp.watch('src/js/**/*.js', ['default']);
-});
-
-gulp.task('default', ['js', 'scss']);
+gulp.task('default', ['js', 'scss', 'watch']);
 
 gulp.task('js', ['js-blockly', 'js-app']);
 
@@ -65,4 +59,9 @@ gulp.task('scss', function () {
         .pipe(sass(config.sass))
         .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
         .pipe(gulp.dest('dist'))
+});
+
+gulp.task('watch', function () {
+    gulp.watch(PATHS.JS, ['js-app']);
+    gulp.watch(PATHS.SCSS, ['scss']);
 });
