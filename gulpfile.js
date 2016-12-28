@@ -17,7 +17,9 @@ var PATHS = {
     JS: [
         'node_modules/lodash/lodash.js',
         'node_modules/phaser/build/phaser.js',
-        'src/js/workspace/**/*.js'
+        'src/js/workspace/**/*.js',
+        'src/js/game/states/*.js',
+        'src/js/game/*.js'
     ],
     SCSS: [
         'src/scss/**/*.scss'
