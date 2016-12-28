@@ -10,6 +10,7 @@ function Workspace(options) {
 }
 
 Workspace.prototype.inject = function inject(parentEl) {
+    var button;
     if (!this._workspace) {
         parentEl.appendChild(this.el);
         this._parentEl = parentEl;
@@ -19,6 +20,10 @@ Workspace.prototype.inject = function inject(parentEl) {
         // window.addEventListener('resize', this.onResize.bind(this), false);
         // this.onResize();
         Blockly.svgResize(this._workspace);
+        button = document.createElement('button');
+        button.className = 'workspace__play-btn js-workspace-play';
+        button.innerHTML = 'Play';
+        parentEl.appendChild(button);
     }
 };
 
