@@ -17,8 +17,11 @@ Game.prototype.start = function  start() {
     this._game.state.start("Boot");
 };
 
-Game.prototype.stop = function  start() {
+Game.prototype.stop = function  stop() {
     this._game.state.start("empty");
 };
 
-Game.fn = function () {};
+Game.fn = function () {
+    // This is just being done to prevent the game canvas from being black by default.
+    this.game.stage.backgroundColor = "#a9f0ff";
+};
