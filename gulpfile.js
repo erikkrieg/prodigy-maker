@@ -17,6 +17,7 @@ var PATHS = {
     JS: [
         'node_modules/lodash/lodash.js',
         'node_modules/phaser/build/phaser.js',
+        'src/js/custom-blocks/**/*.js',
         'src/js/workspace/**/*.js',
         'src/js/game/states/*.js',
         'src/js/game/*.js'
