@@ -8,10 +8,12 @@
 
     workspace.onPlay = function () {
         console.log('start game', workspace.getActions());
+        game.start();
     };
 
     workspace.onStop = function () {
         console.log('stop game');
+        game.stop();
     };
 
     window.maker = {
