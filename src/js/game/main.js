@@ -1,18 +1,14 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'area-game', { preload: preload, create: create, update: update });
-game.state.add("Boot", boot);
-game.state.add("Demo", demo);
-game.state.add("GameOver", gameOver);
-
-game.state.start("Boot", boot);
-
-function preload() {
-    
+function Game() {
+    var game = new Phaser.Game(800, 600, Phaser.AUTO, 'area-game', { 
+        preload: Game.fn, 
+        create: Game.fn, 
+        update: Game.fn 
+    });
+    game.state.add("Boot", boot);
+    game.state.add("Demo", demo);
+    game.state.add("GameOver", gameOver);
+    game.state.start("Boot", boot);
+    return game;
 }
 
-function create() {
-    
-}
-
-function update() {
-    
-}
+Game.fn = function () {};

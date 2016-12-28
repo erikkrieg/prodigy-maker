@@ -8,6 +8,6 @@
     // This is for testing.
     window.maker = {
         workspace: workspace,
-        game: null
+        game: new Game()
     };
 }());
