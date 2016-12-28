@@ -16,7 +16,9 @@ var PATHS = {
     ],
     JS: [
         'node_modules/lodash/lodash.js',
-        'node_modules/phaser/build/phaser.js'
+        'node_modules/phaser/build/phaser.js',
+        'src/js/game/states/*.js',
+        'src/js/game/*.js'
     ],
     SCSS: [
         'src/scss/**/*.scss'
@@ -30,6 +32,13 @@ var config = {
         outputStyle: util.env.production ? 'compressed' : 'nested'
     }
 };
+
+
+gulp.task('watch', ['default', 'watch-files']);
+
+gulp.task('watch-files', function () {
+    gulp.watch('src/js/**/*.js', ['default']);
+});
 
 gulp.task('default', ['js', 'scss']);
 
