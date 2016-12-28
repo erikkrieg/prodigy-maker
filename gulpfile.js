@@ -31,7 +31,7 @@ var config = {
     }
 };
 
-gulp.task('default', ['js', 'scss']);
+gulp.task('default', ['js', 'scss', 'watch']);
 
 gulp.task('js', ['js-blockly', 'js-app']);
 
@@ -56,4 +56,9 @@ gulp.task('scss', function () {
         .pipe(sass(config.sass))
         .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
         .pipe(gulp.dest('dist'))
+});
+
+gulp.task('watch', function () {
+    gulp.watch(PATHS.JS, ['js-app']);
+    gulp.watch(PATHS.SCSS, ['scss']);
 });
