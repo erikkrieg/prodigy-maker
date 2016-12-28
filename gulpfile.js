@@ -7,6 +7,7 @@ var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var util = require('gulp-util');
 var gulpif = require('gulp-if');
+var browserSync = require('browser-sync').create();
 
 var PATHS = {
     BLOCKLY_JS: [
@@ -37,10 +38,6 @@ var config = {
     }
 };
 
-gulp.task('default', ['js', 'scss', 'watch']);
-
-gulp.task('js', ['js-blockly', 'js-app']);
-
 // These files are very large and already compressed,
 // so they have been seperated from the js-app task.
 gulp.task('js-blockly', function () {
@@ -56,15 +53,32 @@ gulp.task('js-app', function () {
         .pipe(gulp.dest('dist'));
 });
 
+gulp.task('js', ['js-blockly', 'js-app']);
+
 gulp.task('scss', function () {
     return gulp.src(PATHS.SCSS)
         .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
         .pipe(sass(config.sass))
         .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
         .pipe(gulp.dest('dist'))
+        .pipe(browserSync.stream());
 });
 
 gulp.task('watch', function () {
     gulp.watch(PATHS.JS, ['js-app']);
     gulp.watch(PATHS.SCSS, ['scss']);
 });
+
+gulp.task('browser-sync', function () {
+    var path = './dist/';
+    browserSync.init({
+        server: {
+            baseDir: path,
+        },
+    });
+    gulp.watch(path + '*.html').on('change', browserSync.reload);
+});
+
+gulp.task('default', ['js', 'scss', 'watch']);
+
+gulp.task('sync', ['default', 'browser-sync']);
