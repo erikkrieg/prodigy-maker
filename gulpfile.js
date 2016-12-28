@@ -21,7 +21,8 @@ var PATHS = {
         'src/js/custom-blocks/**/*.js',
         'src/js/workspace/**/*.js',
         'src/js/game/states/*.js',
-        'src/js/game/*.js'
+        'src/js/game/*.js',
+        'src/js/entry.js'
     ],
     SCSS: [
         'src/scss/**/*.scss'
