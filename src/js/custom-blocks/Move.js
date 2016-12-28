@@ -1,8 +1,8 @@
 (function () {
     var moveColor = 290;
     var movement = [
-        { type: 'move_right', label: 'Move Right' },
-        { type: 'move_left', label: 'Move Left' },
+        { type: 'move_right', label: '→ Move Right' },
+        { type: 'move_left', label: '← Move Left' },
         { type: 'move_wait', label: 'Wait' },
     ];
 
