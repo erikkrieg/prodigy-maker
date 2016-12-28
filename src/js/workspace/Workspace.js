@@ -1,5 +1,6 @@
 function Workspace(options) {
     this._workspace;
+    this._isPlaying = false;
     this._toolbox = document.getElementById(options.toolboxId);
     this.el = document.createElement('div');
     this.el.className = 'workspace';
@@ -24,10 +25,23 @@ Workspace.prototype.inject = function inject(parentEl) {
         button.className = 'workspace__play-btn js-workspace-play';
         button.innerHTML = 'Play';
         parentEl.appendChild(button);
+        button.addEventListener('click', this.onPlayStopToggle.bind(this));
     }
 };
 
-Workspace.prototype.onResize = function onResize(e) {
+Workspace.prototype.onPlayStopToggle = function onPlayStopToggle(event) {
+    if (this._isPlaying) {
+        this.onStop();
+        this._isPlaying = false;
+        event.target.innerHTML = 'Play';
+    } else {
+        this.onPlay();
+        this._isPlaying = true;
+        event.target.innerHTML = 'Stop';
+    }
+};
+
+Workspace.prototype.onResize = function onResize(event) {
     // Compute the absolute coordinates and dimensions of workspace's parent.
     var el = this.el;
     var parent = this._parentEl;

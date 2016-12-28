@@ -1,13 +1,21 @@
 (function () {
+    var game = new Game();
     var workspace = new Workspace({ 
         id:'main-workspace',
         toolboxId: 'workspace-toolbox'
     });
     workspace.inject(document.getElementById('area-workspace'));
 
-    // This is for testing.
+    workspace.onPlay = function () {
+        console.log('start game', workspace.getActions());
+    };
+
+    workspace.onStop = function () {
+        console.log('stop game');
+    };
+
     window.maker = {
         workspace: workspace,
-        game: new Game()
+        game: game
     };
 }());
