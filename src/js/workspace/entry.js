@@ -1,3 +1,7 @@
 (function () {
-    var workspace = Blockly.inject('area-workspace', { toolbox: document.getElementById('workspace-toolbox') });
+    var workspace = new Workspace({ 
+        id:'main-workspace',
+        toolboxId: 'workspace-toolbox'
+    });
+    workspace.inject(document.getElementById('area-workspace'));
 }());
