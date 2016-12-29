@@ -24,30 +24,27 @@ demo.prototype = {
         this.game.load.image('tiles', 'assets/sprites/pix.png');
         this.game.load.spritesheet('player', 'assets/sprites/player.png', 100, 100, 18);
 
+        
+    },
+    create: function(){
+        this.setDefaults();
+        this.setupStage();
+        this.setupPlayer();
+        this.setupPhysics();
+    },
+
+    setupPhysics: function() {
+        this.game.physics.arcade.enable(this.sprite);
+         //Set some physics on the sprite
+        this.enableGravity();
+        this.sprite.body.gravity.x = 0;
+    },
+
+    setDefaults: function() {
         this.actionNumber = 0;
         this.gameOver = false;
         this.wallCollision = false;
         this.playerTweens = [];
-    },
-    create: function(){
-        this.setupStage();
-
-        this.setupPlayer();
-        
-        this.game.physics.arcade.enable(this.sprite);
-     
-        //Change the world size to match the size of this layer
-        this.groundLayer.resizeWorld();
-
-         //Set some physics on the sprite
-        this.enableGravity();
-        this.sprite.body.gravity.x = 0;
-     
-        //Make the camera follow the sprite
-        this.game.camera.follow(this.sprite, Phaser.Camera.FOLLOW_PLATFORMER);
-
-        //Enable cursor keys so we can create some controls
-        this.cursors = this.game.input.keyboard.createCursorKeys();
     },
 
     setupStage: function() {
@@ -66,11 +63,11 @@ demo.prototype = {
         this.backgroundLayer = this.map.createLayer('BackgroundLayer');
         this.groundLayer = this.map.createLayer('GroundLayer');
 
-        console.log(this.backgroundLayer);
-
-     
         //Before you can use the collide function you need to set what tiles can collide
         this.map.setCollisionBetween(1, 100, true, 'GroundLayer');
+
+        //Change the world size to match the size of this layer
+        this.groundLayer.resizeWorld();
     },
 
     setupPlayer: function() {
@@ -84,6 +81,9 @@ demo.prototype = {
 
 
         this.sprite.animations.play('stand', this.FRAME_RATE, true);
+
+        //Make the camera follow the sprite
+        this.game.camera.follow(this.sprite, Phaser.Camera.FOLLOW_PLATFORMER);
     },
 
     update: function() {
