@@ -100,6 +100,7 @@ demo.prototype = {
         if(tilesBelowPlayer.length == 0 && actions[this.actionNumber - 1] !== ACTION.JUMP_RIGHT) {
             this.sprite.animations.play('fall');
             this.gameOver = true;
+            this.stopPlayerTweens();
         }
     },
 
@@ -139,7 +140,7 @@ demo.prototype = {
     },
 
     completeGame: function() {
-        _.delay(this.restartGame.bind(this), 1000);
+        // _.delay(this.restartGame.bind(this), 1000);
         this.sprite.animations.play('stand', this.FRAME_RATE, true);
     },
 
