@@ -22,7 +22,7 @@ demo.prototype = {
         // this.game.load.spritesheet('player', 'tiles.png', 128, 128);
         this.game.load.tilemap('tilemap', 'level.json', null, Phaser.Tilemap.TILED_JSON);
         this.game.load.image('tiles', 'assets/sprites/pix.png');
-        this.game.load.spritesheet('player', 'assets/sprites/player.png', 100, 100, 18);
+        this.game.load.spritesheet('player', 'assets/sprites/player.png', 100, 100, 36);
         this.game.load.spritesheet('toaster', 'assets/sprites/toaster.png', 100, 100, 6);
 
     },
@@ -86,7 +86,10 @@ demo.prototype = {
         this.sprite.animations.add('stand', [8,9,10,11,12,13,14,15]);
         this.sprite.animations.add('fall', [16]);
         this.sprite.animations.add('jump', [17]);
-        this.sprite.animations.add('victory', [4]);
+        this.sprite.animations.add('victory', [20,21,22,23,24,25,26,27]);
+        this.sprite.animations.add('climb', [28,29,30,31,32,33,34,35]);
+
+
 
 
         this.sprite.animations.play('stand', this.FRAME_RATE, true);
@@ -211,7 +214,7 @@ demo.prototype = {
     climbUp: function(callback) {
         var self = this;
         var hardcodedClimbingDistance = 514;
-        this.sprite.animations.play('walk', this.FRAME_RATE, true);
+        this.sprite.animations.play('climb', this.FRAME_RATE, true);
 
         if(this.isClimbable()) {
             this.isClimbing = true;
@@ -286,6 +289,7 @@ demo.prototype = {
         _.delay(function() {
             this.toaster.animations.play('victory', this.FRAME_RATE);
             this.sprite.animations.play('victory', this.FRAME_RATE);
+            this.sprite.animations.currentAnim.onComplete.add(function () { this.sprite.animations.play('stand', this.FRAME_RATE) }.bind(this), this);
         }.bind(this), 150)
     },
 
