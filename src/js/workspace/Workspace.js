@@ -60,6 +60,7 @@ Workspace.prototype.onResize = function onResize(event) {
 };
 
 Workspace.prototype.getCode = function getCode(format) {
+    var indent = '&nbsp;&nbsp;&nbsp;&nbsp;';
     var code = Blockly.JavaScript.workspaceToCode(this._workspace);
     format = format || 'string';
 
@@ -67,7 +68,7 @@ Workspace.prototype.getCode = function getCode(format) {
     if (format.toUpperCase() === 'HTML') {
         code = code.split(/\r?\n/).reduce(function (prev, cur) {
             if(cur.trim().length > 0) {
-                prev += '<li>' + cur + '</li>';
+                prev += '<li>' + cur.replace(/  /g, indent) + '</li>';
             }
             return prev;
         }, '<ul class="workspace__code">');
