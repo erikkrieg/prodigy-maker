@@ -5,7 +5,7 @@ function Workspace(options) {
     this.el = document.createElement('div');
     this.el.className = 'workspace';
     this._playBtnHTML = '<i class="fa fa-play-circle" aria-hidden="true"></i>';
-    this._stopBtnHTML = '<i class="fa fa-stop-circle" aria-hidden="true"></i>';
+    this._stopBtnHTML = '<i class="fa fa-refresh" aria-hidden="true"></i>';
 
     if (options.id) {
         this.el.setAttribute('id', options.id);

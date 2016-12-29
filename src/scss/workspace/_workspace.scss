@@ -47,10 +47,16 @@
             top: -5px;
             left: 1px;
             font-size: 81px;
+            pointer-events: none;
+            opacity: 1;
         }
 
         &:hover {
-            //background-color: $color-secondary;
+            .fa { opacity: 0.85 }
+        }
+
+        &:active {
+            .fa { opacity: 1 }
         }
     }
 }
