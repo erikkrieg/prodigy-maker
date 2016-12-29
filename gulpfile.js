@@ -60,7 +60,7 @@ gulp.task('scss', function () {
         .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
         .pipe(sass(config.sass))
         .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
-        .pipe(gulp.dest('dist'))
+        .pipe(gulp.dest('dist/css'))
         .pipe(browserSync.stream());
 });
 
