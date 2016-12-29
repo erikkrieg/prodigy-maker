@@ -59,8 +59,21 @@ Workspace.prototype.onResize = function onResize(event) {
     el.style.height = this._parentEl.offsetHeight + 'px';
 };
 
-Workspace.prototype.getCode = function getCode() {
-    return Blockly.JavaScript.workspaceToCode(this._workspace); 
+Workspace.prototype.getCode = function getCode(format) {
+    var code = Blockly.JavaScript.workspaceToCode(this._workspace);
+    format = format || 'string';
+
+    // TODO: replace indents with html entities
+    if (format.toUpperCase() === 'HTML') {
+        code = code.split(/\r?\n/).reduce(function (prev, cur) {
+            if(cur.trim().length > 0) {
+                prev += '<li>' + cur + '</li>';
+            }
+            return prev;
+        }, '<ul class="workspace__code">');
+        code += '</ul>';
+    }
+    return code;
 };
 
 Workspace.prototype.getActions = function play() {
