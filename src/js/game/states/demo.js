@@ -48,8 +48,6 @@ demo.prototype = {
 
         //Enable cursor keys so we can create some controls
         this.cursors = this.game.input.keyboard.createCursorKeys();
-
-        _.delay(this.processActions.bind(this), 1000);
     },
 
     setupStage: function() {
@@ -131,7 +129,6 @@ demo.prototype = {
     },
 
     processActions: function() {
-        console.log("processActions", this.actionNumber, actions.length, this.gameOver);
         if(this.actionNumber < actions.length && !this.gameOver) {
             this.processAction(actions[this.actionNumber]);
             this.actionNumber++;

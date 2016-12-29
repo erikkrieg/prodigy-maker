@@ -11,10 +11,10 @@ function Game() {
     game.state.add("Demo", demo);
     game.state.add("GameOver", gameOver);
     this._game = game;
+    this._game.state.start("Boot");
 }
 
 Game.prototype.start = function  start() {
-    this._game.state.start("Boot");
 };
 
 Game.prototype.stop = function  stop() {

@@ -12,7 +12,7 @@
             return window.ACTION[action.toUpperCase()];
         });
         console.log('start game', window.actions);
-        game.start();
+        demo.processActions();
     };
 
     workspace.onStop = function () {
