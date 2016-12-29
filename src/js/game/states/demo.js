@@ -23,12 +23,15 @@ demo.prototype = {
         this.game.load.tilemap('tilemap', 'level.json', null, Phaser.Tilemap.TILED_JSON);
         this.game.load.image('tiles', 'assets/sprites/pix.png');
         this.game.load.spritesheet('player', 'assets/sprites/player.png', 100, 100, 18);
+        this.game.load.spritesheet('toaster', 'assets/sprites/toaster.png', 100, 100, 6);
+
     },
 
     create: function(){
         this.setDefaults();
         this.setupStage();
         this.setupPlayer();
+        this.setupToaster();
         this.setupPhysics();
     },
 
@@ -74,19 +77,34 @@ demo.prototype = {
     },
 
     setupPlayer: function() {
+        var spritePositionX = this.TILE_SIZE;
+        var spritePositionY = 775;
         //Add the sprite to the game and enable arcade physics on it
-        this.sprite = this.game.add.sprite(this.TILE_SIZE, 775, 'player');
+        this.sprite = this.game.add.sprite(spritePositionX, spritePositionY, 'player');
         this.sprite.anchor.setTo(-0.30, 1);
         this.sprite.animations.add('walk', [0,1,2,3,4,5,6,7]);
         this.sprite.animations.add('stand', [8,9,10,11,12,13,14,15]);
         this.sprite.animations.add('fall', [16]);
         this.sprite.animations.add('jump', [17]);
+        this.sprite.animations.add('victory', [4]);
 
 
         this.sprite.animations.play('stand', this.FRAME_RATE, true);
 
         //Make the camera follow the sprite
         this.game.camera.follow(this.sprite, Phaser.Camera.FOLLOW_PLATFORMER);
+    },
+
+    setupToaster: function() {
+        var spritePositionX = this.TILE_SIZE * 17;
+        var spritePositionY = 265;
+        // var spritePositionX = this.TILE_SIZE * 3;
+        // var spritePositionY = 775;
+
+        //Add the sprite to the game and enable arcade physics on it
+        this.toaster = this.game.add.sprite(spritePositionX, spritePositionY, 'toaster');
+        this.toaster.anchor.setTo(-0.30, 1);
+        this.toaster.animations.add('victory', [1,2,3,4,5]);
     },
 
     update: function() {
@@ -261,9 +279,14 @@ demo.prototype = {
     },
 
     showVictory: function() {
+        console.log("VICTORY");
+        this.gameOver = true;
+        this.stopPlayerTweens();
+        
         _.delay(function() {
-            alert("Victory!");
-        }, 500);
+            this.toaster.animations.play('victory', this.FRAME_RATE);
+            this.sprite.animations.play('victory', this.FRAME_RATE);
+        }.bind(this), 150)
     },
 
     enableGravity: function() {
