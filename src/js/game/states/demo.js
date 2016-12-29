@@ -23,9 +23,8 @@ demo.prototype = {
         this.game.load.tilemap('tilemap', 'level.json', null, Phaser.Tilemap.TILED_JSON);
         this.game.load.image('tiles', 'assets/sprites/pix.png');
         this.game.load.spritesheet('player', 'assets/sprites/player.png', 100, 100, 18);
-
-        
     },
+
     create: function(){
         this.setDefaults();
         this.setupStage();
