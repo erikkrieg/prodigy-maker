@@ -33,8 +33,6 @@ demo.prototype = {
 
     setupPhysics: function() {
         this.game.physics.arcade.enable(this.sprite);
-         //Set some physics on the sprite
-        this.enableGravity();
         this.sprite.body.gravity.x = 0;
     },
 
@@ -43,6 +41,7 @@ demo.prototype = {
         this.gameOver = false;
         this.wallCollision = false;
         this.playerTweens = [];
+        this.isJumping = false;
     },
 
     setupStage: function() {
@@ -70,7 +69,7 @@ demo.prototype = {
 
     setupPlayer: function() {
         //Add the sprite to the game and enable arcade physics on it
-        this.sprite = this.game.add.sprite(this.TILE_SIZE, 1100, 'player');
+        this.sprite = this.game.add.sprite(this.TILE_SIZE, 1152, 'player');
         this.sprite.anchor.setTo(0, 1);
         this.sprite.animations.add('walk', [0,1,2,3,4,5,6,7]);
         this.sprite.animations.add('stand', [8,9,10,11,12,13,14,15]);
@@ -93,9 +92,10 @@ demo.prototype = {
     },
 
     checkFalling: function() {
-        var tilesBelowPlayer = this.groundLayer.getTiles(this.sprite.position.x, this.sprite.position.y + 50, 50, 300, true);
+        var tilesBelowPlayer = this.groundLayer.getTiles(this.sprite.position.x, this.sprite.position.y, this.TILE_SIZE, 300, true);
 
-        if(tilesBelowPlayer.length == 0 && actions[this.actionNumber - 1] !== ACTION.JUMP_RIGHT) {
+        if(tilesBelowPlayer.length == 0 && !this.isJumping) {
+            this.enableGravity();
             this.sprite.animations.play('fall');
             this.gameOver = true;
             this.stopPlayerTweens();
@@ -128,6 +128,7 @@ demo.prototype = {
     },
 
     processActions: function() {
+
         if(this.actionNumber < actions.length && !this.gameOver) {
             this.processAction(actions[this.actionNumber]);
             this.actionNumber++;
@@ -181,6 +182,8 @@ demo.prototype = {
 
     moveRight: function(callback) {
 
+        if(this.isNextTileBlocked()) return;
+
         this.sprite.animations.play('walk', this.FRAME_RATE, true);
 
         var tween = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x + this.TILE_SIZE }, this.TIME_TO_MOVE, Phaser.Easing.Linear.None, true);
@@ -195,19 +198,21 @@ demo.prototype = {
 
         if(!this.isOnGround()) return;
         
-        var originalSpritePosition = this.sprite.position.y;
+        this.isJumping = true;
         this.sprite.animations.play('jump', this.FRAME_RATE, true);
 
 
         var tweenX = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x + this.TILE_SIZE * 2 }, this.TIME_TO_JUMP, Phaser.Easing.Linear.None);
-        // tweenX.onComplete.add(callback.bind(this));
         tweenX.start();
 
         var tweenY = this.game.add.tween(this.sprite).to( { y: this.sprite.position.y - this.TILE_SIZE}, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.Out)
-        tweenY.onComplete.add(function() {
-            var tweenYDown = this.game.add.tween(this.sprite).to( { y: originalSpritePosition - 5 }, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.In, true);
-            tweenYDown.onComplete.add(callback.bind(this));
-        }, this);
+        var tweenYDown = this.game.add.tween(this.sprite).to( { y: this.sprite.position.y}, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.In);
+        tweenYDown.onComplete.add(function(){
+            this.isJumping = false;
+            callback();
+        }.bind(this));
+
+        tweenY.chain(tweenYDown);
         tweenY.start();
     },
 
