@@ -4,7 +4,7 @@ var ACTION = {
     CLIMB_RIGHT: 3
 };
 
-var actions = [ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT, ACTION.JUMP_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT];
+var actions = [];
 
 
 var demo = function(game){
@@ -42,6 +42,7 @@ demo.prototype = {
         this.wallCollision = false;
         this.playerTweens = [];
         this.isJumping = false;
+        this.isVictory = false;
     },
 
     setupStage: function() {
@@ -70,7 +71,7 @@ demo.prototype = {
     setupPlayer: function() {
         //Add the sprite to the game and enable arcade physics on it
         this.sprite = this.game.add.sprite(this.TILE_SIZE, 1152, 'player');
-        this.sprite.anchor.setTo(0, 1);
+        this.sprite.anchor.setTo(-0.30, 1);
         this.sprite.animations.add('walk', [0,1,2,3,4,5,6,7]);
         this.sprite.animations.add('stand', [8,9,10,11,12,13,14,15]);
         this.sprite.animations.add('fall', [16]);
@@ -84,40 +85,32 @@ demo.prototype = {
     },
 
     update: function() {
-        //Make the sprite collide with the ground layer
-        this.game.physics.arcade.collide(this.sprite, this.groundLayer);
+        this.game.physics.arcade.overlap(this.sprite, this.backgroundLayer, function(player,object) {
+            if(!this.isVictory && object.properties.name == "victory") {
+                this.showVictory();
+                this.isVictory = true;
+            }
+        }.bind(this));
 
+        this.updateGravity();
         this.checkFalling();
-        this.checkWall();
+    },
+
+    updateGravity: function() {
+        var tilesBelowPlayer = this.groundLayer.getTiles(this.sprite.position.x, this.sprite.position.y, 20, 20, true);
+        if(tilesBelowPlayer.length == 0 && !this.isJumping) {
+            this.enableGravity();
+        }
     },
 
     checkFalling: function() {
         var tilesBelowPlayer = this.groundLayer.getTiles(this.sprite.position.x, this.sprite.position.y, this.TILE_SIZE, 300, true);
 
         if(tilesBelowPlayer.length == 0 && !this.isJumping) {
-            this.enableGravity();
-            this.sprite.animations.play('fall');
             this.gameOver = true;
+            this.sprite.animations.play('fall');
+            this.enableGravity();
             this.stopPlayerTweens();
-        }
-    },
-
-    checkWall: function() {
-        var self = this;
-        var tilesBlockingPlayer = this.groundLayer.getTiles(this.sprite.position.x + this.sprite.width - 15, this.sprite.position.y - this.sprite.height / 2, 10 , 10, true);
-
-        if(tilesBlockingPlayer.length > 0 && !this.wallCollision) {
-            this.stopPlayerTweens();
-
-            if(!this.wallCollision) {
-                _.delay(function(){
-                    this.wallCollision = false;
-                    self.processActions();
-                }, 1000);
-            }
-
-            this.wallCollision = true;
-
         }
     },
 
@@ -128,7 +121,7 @@ demo.prototype = {
     },
 
     processActions: function() {
-
+        console.log("processActions");
         if(this.actionNumber < actions.length && !this.gameOver) {
             this.processAction(actions[this.actionNumber]);
             this.actionNumber++;
@@ -144,7 +137,7 @@ demo.prototype = {
     },
 
     restartGame: function() {
-        this.game.state.start("Demo");
+        this.game.state.start("Boot");
     },
 
     processAction: function(action) {
@@ -162,7 +155,12 @@ demo.prototype = {
     },
 
     isNextTileBlocked: function() {
-        var tilesBlockingPlayer = this.groundLayer.getTiles(this.sprite.position.x + this.sprite.width + this.TILE_SIZE, this.sprite.position.y - this.sprite.height / 2, 10 , 10, true);
+        var tilesBlockingPlayer = this.groundLayer.getTiles(this.sprite.position.x + this.sprite.width - 15, this.sprite.position.y - this.sprite.height / 2, this.TILE_SIZE , 10, false);
+
+        // For some reason, index -1 appears all of the time
+        _.remove(tilesBlockingPlayer, {
+            index: -1
+        });
 
         if(tilesBlockingPlayer.length > 0) {
             return true;
@@ -182,16 +180,22 @@ demo.prototype = {
 
     moveRight: function(callback) {
 
-        if(this.isNextTileBlocked()) return;
-
         this.sprite.animations.play('walk', this.FRAME_RATE, true);
 
-        var tween = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x + this.TILE_SIZE }, this.TIME_TO_MOVE, Phaser.Easing.Linear.None, true);
-        tween.onComplete.add(function() {
-            callback();
-        }, this);
+        if(this.isNextTileBlocked()) {
+            _.delay(function(){
+                callback();
+            }.bind(this), 1000);
+        }
+        else {
+            var tween = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x + this.TILE_SIZE }, this.TIME_TO_MOVE, Phaser.Easing.Linear.None, true);
+            tween.onComplete.add(function() {
+                callback();
+            }, this);
 
-        this.playerTweens.push(tween);
+            this.playerTweens.push(tween);
+        }
+        
     },
 
     jumpRight: function(callback) {
@@ -202,8 +206,12 @@ demo.prototype = {
         this.sprite.animations.play('jump', this.FRAME_RATE, true);
 
 
-        var tweenX = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x + this.TILE_SIZE * 2 }, this.TIME_TO_JUMP, Phaser.Easing.Linear.None);
-        tweenX.start();
+        if(!this.isNextTileBlocked()) {
+            var tweenX = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x + this.TILE_SIZE * 2 }, this.TIME_TO_JUMP, Phaser.Easing.Linear.None);
+            tweenX.start();
+        }
+
+        console.log("next tile blocked: ", this.isNextTileBlocked());
 
         var tweenY = this.game.add.tween(this.sprite).to( { y: this.sprite.position.y - this.TILE_SIZE}, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.Out)
         var tweenYDown = this.game.add.tween(this.sprite).to( { y: this.sprite.position.y}, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.In);
@@ -226,6 +234,12 @@ demo.prototype = {
             callback();
         }, this);
         tweenY.start();
+    },
+
+    showVictory: function() {
+        _.delay(function() {
+            alert("Victory!");
+        }, 500);
     },
 
     enableGravity: function() {
