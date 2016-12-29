@@ -12,7 +12,9 @@
     workspace.onReplay = function () {
         var actions = workspace.getActions().map(actionMap);
         game.resetState();
-        game.processActions(actions);
+        setTimeout(function delay() {
+            game.processActions(actions);
+        }, 500);
     };
     window.maker = {
         workspace: workspace,
