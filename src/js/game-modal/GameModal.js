@@ -14,8 +14,13 @@
     }
 
     function onClick(event) {
-        if (event.target && event.target.className.indexOf('js-modal-close') > -1) {
-            this.close();
+        var target = event.target;
+        if (target) {
+            if (target.className.indexOf('js-modal-close') > -1) {
+                this.close();
+            } else if (target.className.indexOf('js-show-code') > -1) {
+                document.querySelector('#victory-modal-code-area').innerHTML = maker.workspace.getCode('html');
+            }
         }
     }
 
