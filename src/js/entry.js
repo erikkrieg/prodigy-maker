@@ -7,6 +7,7 @@
     workspace.inject(document.getElementById('area-workspace'));
     workspace.onPlay = function () {
         var actions = workspace.getActions().map(actionMap);
+        console.log("onPlay");
         game.processActions(actions);
     };
     workspace.onReset = function () {
