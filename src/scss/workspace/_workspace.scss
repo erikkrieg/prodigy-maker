@@ -51,6 +51,12 @@
             opacity: 1;
         }
 
+        .fa-refresh {
+            font-size: 68px;
+            top: 1px;
+            left: 2px;
+        }
+
         &:hover {
             .fa { opacity: 0.85 }
         }
