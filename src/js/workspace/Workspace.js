@@ -26,6 +26,7 @@ Workspace.prototype.inject = function inject(parentEl) {
         button = document.createElement('button');
         button.className = 'workspace__play-btn js-workspace-play';
         button.innerHTML = this._playBtnHTML;
+        button.setAttribute('title', 'Play');
         parentEl.appendChild(button);
         button.addEventListener('click', this.onPlayStopToggle.bind(this));
     }
@@ -36,10 +37,12 @@ Workspace.prototype.onPlayStopToggle = function onPlayStopToggle(event) {
         this.onReset();
         this._hasPlayed = false;
         event.target.innerHTML = this._playBtnHTML;
+        event.target.setAttribute('title', 'Play');
     } else {
         this.onPlay();
         this._hasPlayed = true;
         event.target.innerHTML = this._stopBtnHTML;
+        event.target.setAttribute('title', 'Stop');
     }
 };
 
