@@ -60,9 +60,14 @@ gulp.task('scss', function () {
         .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
         .pipe(sass(config.sass))
         .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
-        .pipe(gulp.dest('dist'))
+        .pipe(gulp.dest('dist/css'))
         .pipe(browserSync.stream());
 });
+
+gulp.task('fonts', function() {
+  return gulp.src('node_modules/font-awesome/fonts/*')
+    .pipe(gulp.dest('dist/fonts'));
+})
 
 gulp.task('watch', function () {
     gulp.watch(PATHS.JS, ['js-app']);
@@ -79,6 +84,6 @@ gulp.task('browser-sync', function () {
     gulp.watch(path + '*.html').on('change', browserSync.reload);
 });
 
-gulp.task('default', ['js', 'scss', 'watch']);
+gulp.task('default', ['fonts', 'js', 'scss', 'watch']);
 
 gulp.task('sync', ['default', 'browser-sync']);

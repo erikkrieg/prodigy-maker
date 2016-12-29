@@ -4,6 +4,8 @@ function Workspace(options) {
     this._toolbox = document.getElementById(options.toolboxId);
     this.el = document.createElement('div');
     this.el.className = 'workspace';
+    this._playBtnHTML = '<i class="fa fa-play-circle" aria-hidden="true"></i>';
+    this._stopBtnHTML = '<i class="fa fa-refresh" aria-hidden="true"></i>';
 
     if (options.id) {
         this.el.setAttribute('id', options.id);
@@ -23,7 +25,8 @@ Workspace.prototype.inject = function inject(parentEl) {
         Blockly.svgResize(this._workspace);
         button = document.createElement('button');
         button.className = 'workspace__play-btn js-workspace-play';
-        button.innerHTML = 'Play';
+        button.innerHTML = this._playBtnHTML;
+        button.setAttribute('title', 'Play');
         parentEl.appendChild(button);
         button.addEventListener('click', this.onPlayStopToggle.bind(this));
     }
@@ -33,11 +36,13 @@ Workspace.prototype.onPlayStopToggle = function onPlayStopToggle(event) {
     if (this._hasPlayed) {
         this.onReset();
         this._hasPlayed = false;
-        event.target.innerHTML = 'Play';
+        event.target.innerHTML = this._playBtnHTML;
+        event.target.setAttribute('title', 'Play');
     } else {
         this.onPlay();
         this._hasPlayed = true;
-        event.target.innerHTML = 'Reset';
+        event.target.innerHTML = this._stopBtnHTML;
+        event.target.setAttribute('title', 'Stop');
     }
 };
 
@@ -59,8 +64,22 @@ Workspace.prototype.onResize = function onResize(event) {
     el.style.height = this._parentEl.offsetHeight + 'px';
 };
 
-Workspace.prototype.getCode = function getCode() {
-    return Blockly.JavaScript.workspaceToCode(this._workspace); 
+Workspace.prototype.getCode = function getCode(format) {
+    var indent = '&nbsp;&nbsp;&nbsp;&nbsp;';
+    var code = Blockly.JavaScript.workspaceToCode(this._workspace);
+    format = format || 'string';
+
+    // TODO: replace indents with html entities
+    if (format.toUpperCase() === 'HTML') {
+        code = code.split(/\r?\n/).reduce(function (prev, cur) {
+            if(cur.trim().length > 0) {
+                prev += '<li>' + cur.replace(/  /g, indent) + '</li>';
+            }
+            return prev;
+        }, '<ul class="workspace__code">');
+        code += '</ul>';
+    }
+    return code;
 };
 
 Workspace.prototype.getActions = function play() {

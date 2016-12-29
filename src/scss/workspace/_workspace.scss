@@ -1,26 +1,62 @@
 @at-root {
+    $color-primary: #344A5E;
+    $color-secondary: #2C3E50;
+
     .workspace {
         height: 100%;
 
+        .blocklySvg {
+            background-color: $color-primary;
+        }
+
+        .blocklyMainBackground {
+            stroke: none;
+        }
+
+        .blocklyFlyoutBackground {
+            fill: $color-secondary;
+            fill-opacity: 1;
+        }
+        
         .blocklyScrollbarVertical,
         .blocklyScrollbarHorizontal {
             display: none;
         }
-
     }
 
     .workspace__play-btn {
-        $size: 50px;
+        $size: 100px;
         position: absolute;
         top: 50%;
         right: 0;
         width: $size;
         height: $size;
+        padding: 0;
         margin-right: $size / -2;
         margin-top: $size / -2;
         border-radius: 50%;
+        border: 15px solid $color-primary;
         outline: none;
         z-index: 11;
+        background-color: $color-primary;
+        color: white;
         cursor: pointer;
+
+        .fa {
+            position: relative;
+            top: -5px;
+            left: 1px;
+            font-size: 81px;
+            pointer-events: none;
+            opacity: 1;
+        }
+
+        &:hover {
+            .fa { opacity: 0.85 }
+        }
+
+        &:active {
+            .fa { opacity: 1 }
+        }
     }
 }
