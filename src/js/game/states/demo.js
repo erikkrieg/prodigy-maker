@@ -291,6 +291,13 @@ demo.prototype = {
             this.sprite.animations.play('victory', this.FRAME_RATE);
             this.sprite.animations.currentAnim.onComplete.add(function () { this.sprite.animations.play('stand', this.FRAME_RATE) }.bind(this), this);
         }.bind(this), 150)
+        
+        _.delay(function () {
+            var content = document.querySelector('#game-victory-modal-content');
+            new maker.GameModal({
+                content: content.innerHTML
+            });
+        }, 1250);
     },
 
     enableGravity: function() {
