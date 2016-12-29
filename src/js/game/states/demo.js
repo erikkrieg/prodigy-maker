@@ -200,12 +200,13 @@ demo.prototype = {
 
 
         var tweenX = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x + this.TILE_SIZE * 2 }, this.TIME_TO_JUMP, Phaser.Easing.Linear.None);
-        tweenX.onComplete.add(callback.bind(this));
+        // tweenX.onComplete.add(callback.bind(this));
         tweenX.start();
 
         var tweenY = this.game.add.tween(this.sprite).to( { y: this.sprite.position.y - this.TILE_SIZE}, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.Out)
         tweenY.onComplete.add(function() {
-            this.game.add.tween(this.sprite).to( { y: originalSpritePosition - 5 }, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.In, true);
+            var tweenYDown = this.game.add.tween(this.sprite).to( { y: originalSpritePosition - 5 }, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.In, true);
+            tweenYDown.onComplete.add(callback.bind(this));
         }, this);
         tweenY.start();
     },
