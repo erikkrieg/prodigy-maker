@@ -4,7 +4,7 @@ var ACTION = {
     CLIMB_RIGHT: 3
 };
 
-var actions = [ACTION.MOVE_RIGHT, ACTION.JUMP_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT];
+var actions = [ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT, ACTION.JUMP_RIGHT, ACTION.MOVE_RIGHT, ACTION.MOVE_RIGHT];
 
 
 var demo = function(game){
@@ -15,6 +15,7 @@ demo.prototype = {
     TILE_SIZE: 128,
     TIME_TO_MOVE: 300,
     TIME_TO_JUMP: 500,
+    FRAME_RATE: 10,
     // position: TILE_SIZE * 1,
 
     preload: function(){
@@ -25,6 +26,7 @@ demo.prototype = {
 
         this.actionNumber = 0;
         this.gameOver = false;
+        this.wallCollision = false;
         this.playerTweens = [];
     },
     create: function(){
@@ -42,12 +44,10 @@ demo.prototype = {
         this.sprite.body.gravity.x = 0;
      
         //Make the camera follow the sprite
-        this.game.camera.follow(this.sprite);
-     
+        this.game.camera.follow(this.sprite, Phaser.Camera.FOLLOW_PLATFORMER);
+
         //Enable cursor keys so we can create some controls
         this.cursors = this.game.input.keyboard.createCursorKeys();
-
-        _.delay(this.processActions.bind(this), 1000);
     },
 
     setupStage: function() {
@@ -62,7 +62,12 @@ demo.prototype = {
         this.map = this.game.add.tilemap('tilemap');
         this.map.addTilesetImage('pix', 'tiles');
      
+        this.skyLayer = this.map.createLayer('SkyLayer');
+        this.backgroundLayer = this.map.createLayer('BackgroundLayer');
         this.groundLayer = this.map.createLayer('GroundLayer');
+
+        console.log(this.backgroundLayer);
+
      
         //Before you can use the collide function you need to set what tiles can collide
         this.map.setCollisionBetween(1, 100, true, 'GroundLayer');
@@ -70,13 +75,15 @@ demo.prototype = {
 
     setupPlayer: function() {
         //Add the sprite to the game and enable arcade physics on it
-        this.sprite = this.game.add.sprite(this.TILE_SIZE, 500, 'player');
+        this.sprite = this.game.add.sprite(this.TILE_SIZE, 1100, 'player');
         this.sprite.anchor.setTo(0, 1);
         this.sprite.animations.add('walk', [0,1,2,3,4,5,6,7]);
         this.sprite.animations.add('stand', [8,9,10,11,12,13,14,15]);
         this.sprite.animations.add('fall', [16]);
+        this.sprite.animations.add('jump', [17]);
 
-        this.sprite.animations.play('stand', 10, true);
+
+        this.sprite.animations.play('stand', this.FRAME_RATE, true);
     },
 
     update: function() {
@@ -97,12 +104,21 @@ demo.prototype = {
     },
 
     checkWall: function() {
+        var self = this;
         var tilesBlockingPlayer = this.groundLayer.getTiles(this.sprite.position.x + this.sprite.width - 15, this.sprite.position.y - this.sprite.height / 2, 10 , 10, true);
 
-        if(tilesBlockingPlayer.length > 0 && actions[this.actionNumber - 1] == ACTION.MOVE_RIGHT && !this.gameOver) {
+        if(tilesBlockingPlayer.length > 0 && !this.wallCollision) {
             this.stopPlayerTweens();
-            this.gameOver = true;
-            this.processActions();
+
+            if(!this.wallCollision) {
+                _.delay(function(){
+                    this.wallCollision = false;
+                    self.processActions();
+                }, 1000);
+            }
+
+            this.wallCollision = true;
+
         }
     },
 
@@ -124,7 +140,7 @@ demo.prototype = {
 
     completeGame: function() {
         _.delay(this.restartGame.bind(this), 1000);
-        this.sprite.animations.play('stand', 10, true);
+        this.sprite.animations.play('stand', this.FRAME_RATE, true);
     },
 
     restartGame: function() {
@@ -146,8 +162,18 @@ demo.prototype = {
         }
     },
 
+    isNextTileBlocked: function() {
+        var tilesBlockingPlayer = this.groundLayer.getTiles(this.sprite.position.x + this.sprite.width + this.TILE_SIZE, this.sprite.position.y - this.sprite.height / 2, 10 , 10, true);
+
+        if(tilesBlockingPlayer.length > 0) {
+            return true;
+        }
+        return false;
+    },
+
     moveRight: function(callback) {
-        this.sprite.animations.play('walk', 10, true);
+
+        this.sprite.animations.play('walk', this.FRAME_RATE, true);
 
         var tween = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x + this.TILE_SIZE }, this.TIME_TO_MOVE, Phaser.Easing.Linear.None, true);
         tween.onComplete.add(function() {
@@ -158,13 +184,20 @@ demo.prototype = {
     },
 
     jumpRight: function(callback) {
-        var tweenX = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x + this.TILE_SIZE * 2 }, this.TIME_TO_JUMP, Phaser.Easing.Linear.None, true);
-        tweenX.onComplete.add(function() {
-            callback();
-        }, this);
+        var originalSpritePosition = this.sprite.position.y;
+        this.sprite.animations.play('jump', this.FRAME_RATE, true);
 
+
+        var tweenX = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x + this.TILE_SIZE * 2 }, this.TIME_TO_JUMP, Phaser.Easing.Linear.None);
+        tweenX.onComplete.add(callback.bind(this));
+        tweenX.start();
+
+        // this.sprite.body.velocity.y = -100;
         var tweenY = this.game.add.tween(this.sprite).to( { y: this.sprite.position.y - this.TILE_SIZE}, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.Out)
-                        .to( { y: this.sprite.position.y }, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.In, true);
+        tweenY.onComplete.add(function() {
+            this.game.add.tween(this.sprite).to( { y: originalSpritePosition - 5 }, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.In, true);
+        }, this);
+        tweenY.start();
     },
 
     climbRight: function(callback) {
@@ -180,7 +213,7 @@ demo.prototype = {
     },
 
     enableGravity: function() {
-        this.sprite.body.gravity.y = 4000;
+        this.sprite.body.gravity.y = 2000;
     },
 
     disableGravity: function() {

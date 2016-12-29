@@ -11,14 +11,19 @@ function Game() {
     game.state.add("Demo", demo);
     game.state.add("GameOver", gameOver);
     this._game = game;
+    this._game.state.start("Boot");
 }
 
-Game.prototype.start = function  start() {
-    this._game.state.start("Boot");
+Game.prototype.processActions = function  processActions(actions) {
+    // TODO: these actions should not be stored globally. Darien is a big goof <3
+    window.actions = actions;
+    this._game.state.getCurrentState().processActions();
 };
 
 Game.prototype.stop = function  stop() {
-    this._game.state.start("empty");
+    // TODO: implement a way to stop the game from performing the current queue of 
+    // actions that it is working on.
+    // this._game.state.start("empty");
 };
 
 Game.fn = function () {

@@ -5,21 +5,15 @@
         toolboxId: 'workspace-toolbox'
     });
     workspace.inject(document.getElementById('area-workspace'));
-
-    // TODO: Stop using global variables!!!11!
     workspace.onPlay = function () {
-        window.actions = workspace.getActions().map(function (action) {
-            return window.ACTION[action.toUpperCase()];
+        var actions = workspace.getActions().map(function (action) {
+            return window.ACTION[action.toUpperCase()]; // TODO: Stop using global variables!!!11!
         });
-        console.log('start game', window.actions);
-        game.start();
+        game.processActions(actions);
     };
-
     workspace.onStop = function () {
-        console.log('stop game');
         game.stop();
     };
-
     window.maker = {
         workspace: workspace,
         game: game
