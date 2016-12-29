@@ -9,12 +9,8 @@
         var actions = workspace.getActions().map(actionMap);
         game.processActions(actions);
     };
-    workspace.onReplay = function () {
-        var actions = workspace.getActions().map(actionMap);
+    workspace.onReset = function () {
         game.resetState();
-        setTimeout(function delay() {
-            game.processActions(actions);
-        }, 500);
     };
     window.maker = {
         workspace: workspace,

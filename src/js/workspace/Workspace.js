@@ -31,11 +31,13 @@ Workspace.prototype.inject = function inject(parentEl) {
 
 Workspace.prototype.onPlayStopToggle = function onPlayStopToggle(event) {
     if (this._hasPlayed) {
-        this.onReplay();
+        this.onReset();
+        this._hasPlayed = false;
+        event.target.innerHTML = 'Play';
     } else {
         this.onPlay();
         this._hasPlayed = true;
-        event.target.innerHTML = 'Replay';
+        event.target.innerHTML = 'Reset';
     }
 };
 
