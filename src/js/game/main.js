@@ -21,7 +21,7 @@ Game.prototype.processActions = function  processActions(actions) {
 };
 
 Game.prototype.resetState = function resetState() {
-    this._game.state.start(this._game.state.current);
+    this._game.state.restart();
 };
 
 Game.fn = function () {
