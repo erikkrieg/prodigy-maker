@@ -24,14 +24,18 @@
 }
 
 .game-modal {
-    max-width: 350px;
+    max-width: 650px;
     width: 90%;
     padding: 10px;
     background-color: white;
-    border-radius: 2px;
+    border-radius: 10px;
+    border: 8px solid #34495e;
 }
 
 .victory-modal {
+    font-family: sans-serif;
+    color: #34495e;
+
     .btns {
         display: flex;
         justify-content: flex-end;
@@ -41,4 +45,18 @@
     button {
         margin: 0 5px;
     }
+
+    h1 {
+        margin-top: 15px;
+        text-transform: uppercase;
+        font-size: 2.5em;
+        text-align: center;
+    }
+}
+
+.victory-modal__img {
+    display: block;
+    max-width: 250px;
+    width: 55%;
+    margin: auto;
 }
