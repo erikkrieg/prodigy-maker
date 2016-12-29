@@ -4,6 +4,8 @@ function Workspace(options) {
     this._toolbox = document.getElementById(options.toolboxId);
     this.el = document.createElement('div');
     this.el.className = 'workspace';
+    this._playBtnHTML = '<i class="fa fa-play-circle" aria-hidden="true"></i>';
+    this._stopBtnHTML = '<i class="fa fa-stop-circle" aria-hidden="true"></i>';
 
     if (options.id) {
         this.el.setAttribute('id', options.id);
@@ -23,7 +25,7 @@ Workspace.prototype.inject = function inject(parentEl) {
         Blockly.svgResize(this._workspace);
         button = document.createElement('button');
         button.className = 'workspace__play-btn js-workspace-play';
-        button.innerHTML = 'Play';
+        button.innerHTML = this._playBtnHTML;
         parentEl.appendChild(button);
         button.addEventListener('click', this.onPlayStopToggle.bind(this));
     }
@@ -33,11 +35,11 @@ Workspace.prototype.onPlayStopToggle = function onPlayStopToggle(event) {
     if (this._hasPlayed) {
         this.onReset();
         this._hasPlayed = false;
-        event.target.innerHTML = 'Play';
+        event.target.innerHTML = this._playBtnHTML;
     } else {
         this.onPlay();
         this._hasPlayed = true;
-        event.target.innerHTML = 'Reset';
+        event.target.innerHTML = this._stopBtnHTML;
     }
 };
 
