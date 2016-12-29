@@ -1,7 +1,6 @@
 @at-root {
-    $color-primary: #2481BB;
-    $color-secondary: #1571AA;
-    $color-green: #14BD9C;
+    $color-primary: #344A5E;
+    $color-secondary: #2C3E50;
 
     .workspace {
         height: 100%;
@@ -32,15 +31,23 @@
         right: 0;
         width: $size;
         height: $size;
+        padding: 0;
         margin-right: $size / -2;
         margin-top: $size / -2;
         border-radius: 50%;
         border: 15px solid $color-primary;
         outline: none;
         z-index: 11;
-        background-color: $color-green;
+        background-color: $color-primary;
         color: white;
         cursor: pointer;
+
+        .fa {
+            position: relative;
+            top: -5px;
+            left: 1px;
+            font-size: 81px;
+        }
 
         &:hover {
             //background-color: $color-secondary;
