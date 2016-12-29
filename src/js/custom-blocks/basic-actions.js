@@ -5,6 +5,7 @@
         { type: 'move_left', label: '← Move Left' },
         { type: 'move_wait', label: 'Wait' },
         { type: 'jump_right', label: '↗ Jump Right' },
+        { type: 'climb_up', label: '↑ Climb Up' },
     ];
 
     actions.forEach(function (move) {
