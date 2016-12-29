@@ -4,6 +4,7 @@
         { type: 'move_right', label: '→ Move Right' },
         { type: 'move_left', label: '← Move Left' },
         { type: 'move_wait', label: 'Wait' },
+        { type: 'jump_right', label: '↗ Jump Right' },
     ];
 
     movement.forEach(function (move) {
