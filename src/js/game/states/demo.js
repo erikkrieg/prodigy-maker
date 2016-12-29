@@ -58,7 +58,7 @@ demo.prototype = {
         //is the name you gave the tilesheet when importing it into Tiled, the second
         //is the key to the asset in Phaser
         this.map = this.game.add.tilemap('tilemap');
-        this.map.addTilesetImage('pix', 'tiles');
+        this.map.addTilesetImage('Butterland', 'tiles');
      
         this.skyLayer = this.map.createLayer('SkyLayer');
         this.backgroundLayer = this.map.createLayer('BackgroundLayer');
@@ -75,7 +75,7 @@ demo.prototype = {
 
     setupPlayer: function() {
         //Add the sprite to the game and enable arcade physics on it
-        this.sprite = this.game.add.sprite(this.TILE_SIZE, 1152, 'player');
+        this.sprite = this.game.add.sprite(this.TILE_SIZE, 775, 'player');
         this.sprite.anchor.setTo(-0.30, 1);
         this.sprite.animations.add('walk', [0,1,2,3,4,5,6,7]);
         this.sprite.animations.add('stand', [8,9,10,11,12,13,14,15]);
@@ -192,12 +192,13 @@ demo.prototype = {
 
     climbUp: function(callback) {
         var self = this;
+        var hardcodedClimbingDistance = 514;
         this.sprite.animations.play('walk', this.FRAME_RATE, true);
 
         if(this.isClimbable()) {
             this.isClimbing = true;
             var tween = this.game.add.tween(this.sprite).to( {
-                y: this.sprite.position.y - 255
+                y: this.sprite.position.y - hardcodedClimbingDistance
             }, 1000, Phaser.Easing.Linear.None);
             tween.onComplete.add(function() {
                 this.fallBaseline = 10;
