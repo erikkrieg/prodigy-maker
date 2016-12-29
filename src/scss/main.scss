@@ -6,3 +6,26 @@
 
 @import 'layout';
 @import 'workspace/workspace';
+
+
+.overlay {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,0.25);
+    z-index: 1000;
+}
+
+.game-modal {
+    max-width: 350px;
+    width: 90%;
+    padding: 20px;
+    background-color: white;
+}

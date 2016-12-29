@@ -23,6 +23,7 @@ var PATHS = {
         'src/js/workspace/**/*.js',
         'src/js/game/states/*.js',
         'src/js/game/*.js',
+        'src/js/game-modal/*.js',
         'src/js/entry.js'
     ],
     SCSS: [
