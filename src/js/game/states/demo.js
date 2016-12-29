@@ -16,7 +16,6 @@ demo.prototype = {
     TIME_TO_MOVE: 300,
     TIME_TO_JUMP: 500,
     FRAME_RATE: 10,
-    // position: TILE_SIZE * 1,
 
     preload: function(){
         // this.game.load.spritesheet('player', 'tiles.png', 128, 128);
@@ -149,7 +148,6 @@ demo.prototype = {
     },
 
     processAction: function(action) {
-        this.game.debug.text("action: "+action);
         switch(action) {
             case ACTION.MOVE_RIGHT:
                 this.moveRight(this.processActions.bind(this));
@@ -172,6 +170,16 @@ demo.prototype = {
         return false;
     },
 
+    isOnGround: function() {
+        var tilesBelowPlayer = this.groundLayer.getTiles(this.sprite.position.x, this.sprite.position.y + 50, 50, 300, true);
+
+        if(tilesBelowPlayer.length > 0) {
+            return true;
+        }
+
+        return false;
+    },
+
     moveRight: function(callback) {
 
         this.sprite.animations.play('walk', this.FRAME_RATE, true);
@@ -185,6 +193,9 @@ demo.prototype = {
     },
 
     jumpRight: function(callback) {
+
+        if(!this.isOnGround()) return;
+        
         var originalSpritePosition = this.sprite.position.y;
         this.sprite.animations.play('jump', this.FRAME_RATE, true);
 
@@ -193,7 +204,6 @@ demo.prototype = {
         tweenX.onComplete.add(callback.bind(this));
         tweenX.start();
 
-        // this.sprite.body.velocity.y = -100;
         var tweenY = this.game.add.tween(this.sprite).to( { y: this.sprite.position.y - this.TILE_SIZE}, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.Out)
         tweenY.onComplete.add(function() {
             this.game.add.tween(this.sprite).to( { y: originalSpritePosition - 5 }, this.TIME_TO_JUMP / 2, Phaser.Easing.Quadratic.In, true);
