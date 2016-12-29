@@ -1,12 +1,11 @@
 @at-root {
     .workspace {
         height: 100%;
-
+        
         .blocklyScrollbarVertical,
         .blocklyScrollbarHorizontal {
             display: none;
         }
-
     }
 
     .workspace__play-btn {
