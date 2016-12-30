@@ -1,7 +1,8 @@
 var ACTION = {
     MOVE_RIGHT: 1,
     JUMP_RIGHT: 2,
-    CLIMB_UP: 3
+    CLIMB_UP: 3,
+    MOVE_LEFT: 4
 };
 
 var actions = [];
@@ -168,6 +169,9 @@ demo.prototype = {
             case ACTION.CLIMB_UP:
                 this.climbUp(this.processActions.bind(this));
                 break;
+            case ACTION.MOVE_LEFT:
+                this.moveLeft(this.processActions.bind(this));
+                break;
         }
     },
 
@@ -247,6 +251,26 @@ demo.prototype = {
         }
         else {
             var tween = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x + this.TILE_SIZE }, this.TIME_TO_MOVE, Phaser.Easing.Linear.None, true);
+            tween.onComplete.add(function() {
+                callback();
+            }, this);
+
+            this.playerTweens.push(tween);
+        }
+        
+    },
+
+    moveLeft: function(callback) {
+        var self = this;
+        this.sprite.animations.play('walk', this.FRAME_RATE, true);
+
+        if(this.isNextTileBlocked()) {
+            _.delay(function(){
+                callback();
+            }.bind(this), self.FAIL_ACTION_DELAY);
+        }
+        else {
+            var tween = this.game.add.tween(this.sprite).to( { x: this.sprite.position.x - this.TILE_SIZE }, this.TIME_TO_MOVE, Phaser.Easing.Linear.None, true);
             tween.onComplete.add(function() {
                 callback();
             }, this);
